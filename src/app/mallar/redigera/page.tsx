@@ -30,7 +30,7 @@ function move<T>(list: T[], i: number, d: number) {
 
 function QuestionEditor({ q, onChange, onRemove, onMove }: { q: Question; onChange: (q: Question) => void; onRemove: () => void; onMove: (d: number) => void }) {
   return (
-    <div className="space-y-2 rounded-xl border border-slate-200 p-3">
+    <div className="space-y-2 rounded-xl border border-line p-3">
       <Field label="Fråga">
         <input className={inputClass} value={q.label} onChange={(e) => onChange({ ...q, label: e.target.value })} />
       </Field>
@@ -128,7 +128,7 @@ function Editor({ initial }: { initial: Template }) {
       </Card>
 
       {t.sections.map((s, si) => (
-        <Collapsible key={s.id} title={s.title || "Namnlös sektion"} right={<span className="text-sm text-slate-500">{s.questions.length} frågor</span>}>
+        <Collapsible key={s.id} title={s.title || "Namnlös sektion"} right={<span className="text-sm text-muted">{s.questions.length} frågor</span>}>
           <div className="space-y-3">
             <Field label="Sektionsrubrik">
               <input className={inputClass} value={s.title} onChange={(e) => setSection(si, { ...s, title: e.target.value })} />

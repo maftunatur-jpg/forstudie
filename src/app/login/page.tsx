@@ -25,9 +25,9 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-1 items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="mb-1 text-2xl font-bold text-blue-800">Fältinventering</h1>
-        <p className="mb-6 text-slate-600">Logga in med en länk som skickas till din e-post.</p>
+      <div className="w-full max-w-sm rounded-xl border border-line bg-card p-6">
+        <h1 className="mb-1 text-2xl font-bold text-accent">Fältinventering</h1>
+        <p className="mb-6 text-muted">Logga in med en länk som skickas till din e-post.</p>
         {sent ? (
           <Alert>
             Kolla din e-post (<strong>{email}</strong>) och klicka på länken för att logga in. Du kan stänga den här fliken.

@@ -59,7 +59,7 @@ export function ProjectForm({ initial, isNew, isOwner }: { initial: Project; isN
           <input {...text("client")} />
         </Field>
         <div>
-          <span className="mb-1 block text-sm font-medium text-slate-700">Förstudietyp</span>
+          <span className="mb-1 block text-sm font-medium text-muted">Förstudietyp</span>
           <div className="flex flex-wrap gap-2">
             {STUDY_TYPES.map((t) => (
               <Chip key={t} selected={p.study_type === t} onClick={() => set("study_type", p.study_type === t ? null : t)}>
@@ -80,7 +80,7 @@ export function ProjectForm({ initial, isNew, isOwner }: { initial: Project; isN
 
       <Card className="space-y-4">
         <h2 className="font-semibold">Byggnadsnivåer</h2>
-        <p className="text-sm text-slate-600">T.ex. &quot;Lamell&quot; med A–M, eller &quot;Hus&quot; med 1–5. Intervall och kommatecken fungerar.</p>
+        <p className="text-sm text-muted">T.ex. &quot;Lamell&quot; med A–M, eller &quot;Hus&quot; med 1–5. Intervall och kommatecken fungerar.</p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Nivå 1 – namn *">
             <input className={inputClass} value={p.level1_name} onChange={(e) => set("level1_name", e.target.value)} />
@@ -113,7 +113,7 @@ export function ProjectForm({ initial, isNew, isOwner }: { initial: Project; isN
         {(templates ?? []).map((t) => {
           const checked = p.template_ids.includes(t.id);
           return (
-            <label key={t.id} className="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-slate-200 px-3 py-2">
+            <label key={t.id} className="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-line px-3 py-2">
               <input
                 type="checkbox"
                 className="h-5 w-5"
@@ -122,7 +122,7 @@ export function ProjectForm({ initial, isNew, isOwner }: { initial: Project; isN
               />
               <span>
                 <span className="block font-medium">{t.name}</span>
-                {t.description && <span className="block text-sm text-slate-500">{t.description}</span>}
+                {t.description && <span className="block text-sm text-muted">{t.description}</span>}
               </span>
             </label>
           );

@@ -60,8 +60,8 @@ function SummaryEditor({ project, editable }: { project: Project; editable: bool
       )}
       {error && <Alert kind="error">{error}</Alert>}
       {ai && (
-        <div className="space-y-2 rounded-xl border-2 border-dashed border-violet-400 bg-violet-50 p-3">
-          <div className="text-sm font-bold uppercase tracking-wide text-violet-800">AI-förslag – granska</div>
+        <div className="space-y-2 rounded-xl border-2 border-dashed border-accent bg-accent-soft p-3">
+          <div className="text-sm font-bold uppercase tracking-wide text-accent">AI-förslag – granska</div>
           <p className="whitespace-pre-wrap">{ai}</p>
           <div className="flex gap-2">
             <Button
@@ -150,7 +150,7 @@ function Report({ id }: { id: string }) {
 
       <Card className="space-y-3">
         <h2 className="font-semibold">Exportera</h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           Rapporten skapas i webbläsaren: försättsblad, sammanfattning, fördelning, översikt per objekt, ett avsnitt per besök med foton (3 per rad) och gemensamma utrymmen sist.
         </p>
         <div className="flex flex-wrap gap-2">

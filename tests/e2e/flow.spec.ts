@@ -15,14 +15,15 @@ test("nytt projekt → besök → foto → rapport", async ({ page }) => {
   await page.getByLabel("Nivå 1 – värden *").fill("A-C");
   await page.getByRole("button", { name: "Skapa projekt" }).click();
   await expect(page.getByRole("heading", { name: "E2E-fastigheten 1:1" })).toBeVisible();
+  await expect(page.getByText("Inga lägenheter ännu")).toBeVisible();
 
   // Nytt besök
-  await page.getByRole("button", { name: "+ Nytt besök" }).click();
+  await page.getByRole("button", { name: "+ Ny lägenhet" }).click();
   await page.getByRole("button", { name: "B", exact: true }).click();
   await page.getByTestId("object-number").fill("1101");
-  await page.getByRole("button", { name: /^Badrum/ }).click();
+  // Badrum är första sektionen och redan öppen.
   await page.getByRole("button", { name: "Klinker", exact: true }).click();
-  await expect(page.getByRole("button", { name: /^Badrum/ })).toContainText(`1/`);
+  await expect(page.locator("summary", { hasText: "Badrum" })).toContainText("1/");
 
   // Foto (kamera-inputen tar emot en fil)
   await page.getByTestId("camera-input").first().setInputFiles(path.join(__dirname, "../../public/icons/icon-512.png"));
@@ -35,10 +36,10 @@ test("nytt projekt → besök → foto → rapport", async ({ page }) => {
   // Tillbaka till projektet: besöket syns i översikten
   await page.getByRole("link", { name: "Tillbaka" }).click();
   await expect(page.getByText("1101")).toBeVisible();
-  await expect(page.getByText("1 foton")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Lgh 1101.*1 foton.*Brister/ })).toBeVisible();
 
   // Rapport
-  await page.getByRole("link", { name: "Rapport" }).click();
+  await page.getByRole("link", { name: "Rapport", exact: true }).click();
   await page.getByTestId("summary").fill("Sammanfattning från e2e-testet.");
   await page.getByTestId("summary").blur();
 

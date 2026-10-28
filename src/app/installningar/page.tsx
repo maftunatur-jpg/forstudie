@@ -37,7 +37,7 @@ export default function SettingsPage() {
     <div className="space-y-4">
       <PageHeader title="Inställningar" />
       <Card className="space-y-2">
-        <div className="text-sm text-slate-600">{auth.anonymous ? "Din lagring" : "Inloggad som"}</div>
+        <div className="text-sm text-muted">{auth.anonymous ? "Din lagring" : "Inloggad som"}</div>
         <div className="font-medium">{auth.anonymous ? "Privat för den här enheten och webbläsaren. Dina projekt syns bara för dig." : auth.email}</div>
         {!LOCAL_ONLY && !auth.anonymous && (
           <Button
@@ -55,7 +55,7 @@ export default function SettingsPage() {
 
       <Card className="space-y-3">
         <h2 className="font-semibold">Synk</h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           {pending} osynkade poster. {sync.lastSync ? `Senaste synk ${new Date(sync.lastSync).toLocaleTimeString("sv-SE")}.` : ""}
         </p>
         {sync.error && <Alert kind="error">{sync.error}</Alert>}

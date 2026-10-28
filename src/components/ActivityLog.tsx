@@ -61,11 +61,11 @@ export function ActivityLog({ projectId, rowIds }: { projectId: string; rowIds: 
           {online ? "Visa ändringshistorik" : "Ändringshistorik kräver nätverk"}
         </Button>
       ) : (
-        <ul className="space-y-1 text-sm text-slate-700">
+        <ul className="space-y-1 text-sm text-muted">
           {rows.length === 0 && <li>Ingen historik ännu (osynkade ändringar visas efter synk).</li>}
           {rows.map((r) => (
             <li key={r.id}>
-              <span className="text-slate-500">{new Date(r.created_at).toLocaleString("sv-SE")}</span> –{" "}
+              <span className="text-muted">{new Date(r.created_at).toLocaleString("sv-SE")}</span> –{" "}
               <strong>{(r.actor && profiles[r.actor]) || "Okänd"}</strong> {ACTIONS[r.action] ?? r.action}{" "}
               {r.table_name === "photos" ? "ett foto" : ""}
               {r.changed_fields?.length ? ` (${r.changed_fields.map((f) => FIELD_LABELS[f] ?? f).join(", ")})` : ""}
@@ -73,7 +73,7 @@ export function ActivityLog({ projectId, rowIds }: { projectId: string; rowIds: 
           ))}
         </ul>
       )}
-      {error && <p className="text-sm text-red-700">{error}</p>}
+      {error && <p className="text-sm text-bad">{error}</p>}
     </div>
   );
 }

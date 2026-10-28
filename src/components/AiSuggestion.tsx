@@ -39,9 +39,9 @@ export function AiVisitSuggestion({ visit, templates, onApprove }: { visit: Visi
       )}
       {error && <Alert kind="error">{error}</Alert>}
       {suggestion && (
-        <div className="space-y-3 rounded-xl border-2 border-dashed border-violet-400 bg-violet-50 p-3">
-          <div className="text-sm font-bold uppercase tracking-wide text-violet-800">AI-förslag – granska</div>
-          <p className="whitespace-pre-wrap text-slate-800">{suggestion.text}</p>
+        <div className="space-y-3 rounded-xl border-2 border-dashed border-accent bg-accent-soft p-3">
+          <div className="text-sm font-bold uppercase tracking-wide text-accent">AI-förslag – granska</div>
+          <p className="whitespace-pre-wrap text-ink">{suggestion.text}</p>
           <ul className="space-y-1 text-sm">
             {Object.entries(suggestion.ratings).map(([k, r]) => (
               <li key={k} className="flex items-center justify-between gap-2">

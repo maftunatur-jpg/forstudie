@@ -104,8 +104,8 @@ function Team({ id }: { id: string }) {
 
       <Card className="space-y-3">
         <h2 className="font-semibold">Medlemmar</h2>
-        <p className="text-sm text-slate-600">Alla i organisationen ser också projektet enligt sin organisationsroll.</p>
-        <ul className="divide-y divide-slate-100">
+        <p className="text-sm text-muted">Alla i organisationen ser också projektet enligt sin organisationsroll.</p>
+        <ul className="divide-y divide-line">
           {members.map((m) => (
             <li key={m.user_id} className="space-y-2 py-3">
               <div className="font-medium">
@@ -120,7 +120,7 @@ function Team({ id }: { id: string }) {
                   </Button>
                 </div>
               ) : (
-                <div className="text-sm text-slate-600">{ROLE_LABELS[m.role]}</div>
+                <div className="text-sm text-muted">{ROLE_LABELS[m.role]}</div>
               )}
             </li>
           ))}
@@ -135,7 +135,7 @@ function Team({ id }: { id: string }) {
               <input type="email" required className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} />
             </Field>
             <ChipGroup options={ROLE_OPTIONS} value={newRole} allowClear={false} onChange={(r) => r && setNewRole(r)} />
-            <p className="text-sm text-slate-600">Ägare: allt inkl. medlemmar. Redigerare: inventera och redigera. Läsare: bara läsa och exportera.</p>
+            <p className="text-sm text-muted">Ägare: allt inkl. medlemmar. Redigerare: inventera och redigera. Läsare: bara läsa och exportera.</p>
             <Button type="submit" disabled={!online || !email} className="w-full">
               Skicka inbjudan
             </Button>

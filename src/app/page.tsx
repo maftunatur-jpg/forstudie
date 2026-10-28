@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/db";
 import { useAuth } from "@/components/AuthProvider";
-import { Button, Card, LinkButton, PageHeader } from "@/components/ui";
+import { BottomBar, Button, Empty, LinkButton, PageHeader, Status, Tag } from "@/components/ui";
 import { createExampleProject } from "@/lib/example";
 
 export default function ProjectsPage() {
@@ -22,34 +22,38 @@ export default function ProjectsPage() {
   const sorted = (projects ?? []).sort((a, b) => b.updated_at.localeCompare(a.updated_at));
 
   return (
-    <div>
-      <PageHeader title="Projekt" actions={<LinkButton href="/projekt/ny">+ Nytt projekt</LinkButton>} />
+    <>
+      <PageHeader sub="Fältinventering" title="Projekt" />
+      <Status>{projects ? `${sorted.length} projekt på den här enheten. Allt sparas först på enheten och synkas automatiskt.` : "Laddar…"}</Status>
       {projects && sorted.length === 0 && (
-        <Card className="space-y-3 text-center">
-          <p className="text-slate-600">Inga projekt ännu.</p>
-          <Button
-            variant="secondary"
-            onClick={async () => router.push(`/projekt?id=${await createExampleProject(auth.orgId, auth.userId)}`)}
-          >
+        <Empty>
+          <p className="mb-3">
+            Inga projekt ännu. Tryck <b>+ Nytt projekt</b> för att börja, eller prova med ett påhittat exempel.
+          </p>
+          <Button variant="secondary" onClick={async () => router.push(`/projekt?id=${await createExampleProject(auth.orgId, auth.userId)}`)}>
             Skapa exempelprojekt
           </Button>
-        </Card>
+        </Empty>
       )}
-      <ul className="space-y-3">
+      <ul className="flex flex-col gap-2.5">
         {sorted.map((p) => (
           <li key={p.id}>
-            <Link href={`/projekt?id=${p.id}`} className="block rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:border-blue-300">
-              <div className="text-lg font-semibold text-slate-900">{p.name || "Namnlöst projekt"}</div>
-              <div className="text-sm text-slate-600">
-                {[p.property_designation, p.address].filter(Boolean).join(" · ")}
-              </div>
-              <div className="mt-1 text-sm text-slate-500">
-                {p.study_type ?? "Förstudie"} · {counts?.[p.id] ?? 0} besök
-              </div>
+            <Link href={`/projekt?id=${p.id}`} className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-xl border border-line bg-card px-[14px] py-3">
+              <Tag>{(p.study_type ?? "Förstudie").slice(0, 9)}</Tag>
+              <span className="min-w-0">
+                <span className="block truncate font-semibold">{p.name || "Namnlöst projekt"}</span>
+                <span className="block truncate text-[13px] text-muted">{[p.property_designation, p.address].filter(Boolean).join(" · ") || "Ingen adress"}</span>
+              </span>
+              <span className="font-mono text-xs font-medium text-muted">{counts?.[p.id] ?? 0} besök</span>
             </Link>
           </li>
         ))}
       </ul>
-    </div>
+      <BottomBar>
+        <LinkButton href="/projekt/ny" className="flex-1 py-[15px] text-base">
+          + Nytt projekt
+        </LinkButton>
+      </BottomBar>
+    </>
   );
 }

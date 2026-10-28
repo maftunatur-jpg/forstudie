@@ -106,17 +106,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   if (isPublic && REQUIRE_LOGIN) return <>{children}</>;
   if (needsNetwork) {
-    return <div className="flex flex-1 items-center justify-center p-8 text-center text-slate-600">Första gången behöver appen internet för att skapa din lagring. Anslut och ladda om sidan.</div>;
+    return <div className="flex flex-1 items-center justify-center p-8 text-center text-muted">Första gången behöver appen internet för att skapa din lagring. Anslut och ladda om sidan.</div>;
   }
   if (checked && !auth && !REQUIRE_LOGIN) {
     return (
-      <div className="flex flex-1 items-center justify-center p-8 text-center text-slate-600">
+      <div className="flex flex-1 items-center justify-center p-8 text-center text-muted">
         {startError ?? "Kunde inte starta appen. Kontrollera nätverket och ladda om sidan."}
       </div>
     );
   }
   if (!checked || !auth) {
-    return <div className="flex flex-1 items-center justify-center p-8 text-slate-500">Laddar…</div>;
+    return <div className="flex flex-1 items-center justify-center p-8 text-muted">Laddar…</div>;
   }
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }
