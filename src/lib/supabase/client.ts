@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "./config";
 
 let client: SupabaseClient | null = null;
 
@@ -17,10 +18,7 @@ export const REQUIRE_LOGIN = process.env.NEXT_PUBLIC_REQUIRE_LOGIN === "1";
 
 export function supabase(): SupabaseClient {
   if (!client) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) throw new Error("NEXT_PUBLIC_SUPABASE_URL och NEXT_PUBLIC_SUPABASE_ANON_KEY saknas.");
-    client = createClient(url, key, {
+    client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       // Implicit flöde gör att den magiska länken fungerar även om den öppnas
       // på en annan enhet än där den begärdes (t.ex. dator → mobil) och för inbjudningar.
       auth: { flowType: "implicit", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },

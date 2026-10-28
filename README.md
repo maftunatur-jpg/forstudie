@@ -69,8 +69,8 @@ Service workern registreras bara i produktionsläge (`npm run build && npm start
 
 | Variabel | Var | Beskrivning |
 |---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | klient + server | Supabase Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | klient + server | Publishable/anon key. Får finnas i webbläsaren – RLS skyddar datan. |
+| `NEXT_PUBLIC_APP_SUPABASE_URL` | klient + server | Valfri. Supabase Project URL. Standard: projektet i `src/lib/supabase/config.ts`. |
+| `NEXT_PUBLIC_APP_SUPABASE_ANON_KEY` | klient + server | Valfri. Publishable/anon key. Får finnas i webbläsaren – RLS skyddar datan. |
 | `ANTHROPIC_API_KEY` | **endast server** | Valfri. Aktiverar AI-förslag. Utan den visas ett felmeddelande när man trycker på knappen. |
 | `NEXT_PUBLIC_REQUIRE_LOGIN` | klient | Valfri. `1` = e-postinloggning, team och inbjudningar. Utan den: anonymt konto per enhet. |
 | `NEXT_PUBLIC_LOCAL_ONLY` | klient | Valfri. `1` = lokalt läge utan Supabase. |
@@ -81,7 +81,7 @@ Hemligheter ligger bara i `.env.local` (ignoreras av git) och i Vercels miljöva
 
 1. Lägg koden i ett GitHub-repo (`git push`).
 2. På [vercel.com](https://vercel.com): **Add New → Project** → välj repot. Framework: Next.js (identifieras automatiskt).
-3. Under **Environment Variables**: lägg in `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` och (valfritt) `ANTHROPIC_API_KEY` för *Production* och *Preview*.
+3. Under **Environment Variables**: lägg (valfritt) in `ANTHROPIC_API_KEY` och, om ni använder ett eget Supabase-projekt, `NEXT_PUBLIC_APP_SUPABASE_URL` och `NEXT_PUBLIC_APP_SUPABASE_ANON_KEY`. Variablerna heter `APP_` med flit: Vercels Supabase-integration sätter `NEXT_PUBLIC_SUPABASE_*` automatiskt och kan peka på ett annat, tomt projekt för *Production* och *Preview*.
 4. **Deploy.** Varje push till `main` deployas automatiskt; pull requests får förhandsversioner.
 5. Lägg till Vercel-URL:en som *Site URL* och i *Redirect URLs* i Supabase (se ovan), annars hamnar inloggningslänken fel.
 6. Öppna appen i mobilen → *Lägg till på hemskärmen* för att installera.

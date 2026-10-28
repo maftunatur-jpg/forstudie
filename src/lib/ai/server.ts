@@ -1,6 +1,7 @@
 // Gemensamt för AI-routes: autentisering, rate limiting och klient.
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "../supabase/config";
 
 export const AI_MODEL = "claude-opus-5-5";
 const LIMIT_PER_HOUR = 30;
@@ -16,7 +17,7 @@ export async function authorizeAi(req: Request, kind: string) {
   if (!process.env.ANTHROPIC_API_KEY) throw new HttpError(503, "AI-förslag är inte aktiverat (ANTHROPIC_API_KEY saknas).");
   const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) throw new HttpError(401, "Inte inloggad.");
-  const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: `Bearer ${token}` } },
     auth: { persistSession: false, autoRefreshToken: false },
   });
