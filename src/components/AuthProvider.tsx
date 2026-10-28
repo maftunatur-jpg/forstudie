@@ -29,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [checked, setChecked] = useState(false);
   const [needsNetwork, setNeedsNetwork] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const isPublic = PUBLIC_PATHS.includes(pathname);
@@ -54,7 +55,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
         const { data: anon, error } = await supabase().auth.signInAnonymously();
-        if (error) console.error(error);
+        if (error) {
+          console.error(error);
+          setStartError(
+            error.code === "anonymous_provider_disabled"
+              ? "Anonyma konton är avstängda i Supabase. Slå på Authentication → Sign In / Providers → Allow anonymous sign-ins och ladda om sidan."
+              : `Kunde inte skapa din lagring: ${error.message}`,
+          );
+        }
         session = anon.session;
         setNeedsNetwork(false);
       }
@@ -103,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (checked && !auth && !REQUIRE_LOGIN) {
     return (
       <div className="flex flex-1 items-center justify-center p-8 text-center text-slate-600">
-        Kunde inte starta appen. Kontrollera nätverket och ladda om sidan.
+        {startError ?? "Kunde inte starta appen. Kontrollera nätverket och ladda om sidan."}
       </div>
     );
   }
