@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LOCAL_ONLY, supabase } from "@/lib/supabase/client";
+import { LOCAL_ONLY, REQUIRE_LOGIN, supabase } from "@/lib/supabase/client";
 import { getMeta, setMeta } from "@/lib/db/db";
 import { startSync, syncNow } from "@/lib/db/sync";
 import { ensureSeedTemplates } from "@/lib/repo";
@@ -11,6 +11,8 @@ export interface AuthState {
   userId: string;
   email: string;
   orgId: string;
+  /** Anonymt konto (ingen inloggning): inga team eller inbjudningar. */
+  anonymous: boolean;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -26,6 +28,7 @@ const PUBLIC_PATHS = ["/login"];
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [checked, setChecked] = useState(false);
+  const [needsNetwork, setNeedsNetwork] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const isPublic = PUBLIC_PATHS.includes(pathname);
@@ -36,13 +39,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function resolve() {
       await ensureSeedTemplates();
       if (LOCAL_ONLY) {
-        if (!cancelled) setAuth({ userId: "00000000-0000-4000-8000-00000000000a", email: "lokal@exempel.se", orgId: "00000000-0000-4000-8000-00000000000b" });
+        if (!cancelled) setAuth({ userId: "00000000-0000-4000-8000-00000000000a", email: "lokal@exempel.se", orgId: "00000000-0000-4000-8000-00000000000b", anonymous: true });
         setChecked(true);
         return;
       }
       // getSession läser från lokal lagring och fungerar offline.
       const { data } = await supabase().auth.getSession();
-      const session = data.session;
+      let session = data.session;
+      // Utan inloggningskrav: skapa ett eget anonymt konto för enheten första gången.
+      if (!session && !REQUIRE_LOGIN) {
+        if (!navigator.onLine) {
+          setNeedsNetwork(true);
+          setChecked(true);
+          return;
+        }
+        const { data: anon, error } = await supabase().auth.signInAnonymously();
+        if (error) console.error(error);
+        session = anon.session;
+        setNeedsNetwork(false);
+      }
       if (!session) {
         if (!cancelled) setAuth(null);
         setChecked(true);
@@ -57,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
       if (!cancelled) {
-        setAuth(orgId ? { userId: session.user.id, email: session.user.email ?? "", orgId } : null);
+        setAuth(orgId ? { userId: session.user.id, email: session.user.email ?? "", orgId, anonymous: !!session.user.is_anonymous } : null);
         setChecked(true);
         startSync();
         void syncNow();
@@ -77,11 +92,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!checked) return;
-    if (!auth && !isPublic) router.replace("/login");
-    if (auth && isPublic) router.replace("/");
+    if (!auth && !isPublic && REQUIRE_LOGIN) router.replace("/login");
+    if (isPublic && (auth || !REQUIRE_LOGIN)) router.replace("/");
   }, [checked, auth, isPublic, router]);
 
-  if (isPublic) return <>{children}</>;
+  if (isPublic && REQUIRE_LOGIN) return <>{children}</>;
+  if (needsNetwork) {
+    return <div className="flex flex-1 items-center justify-center p-8 text-center text-slate-600">Första gången behöver appen internet för att skapa din lagring. Anslut och ladda om sidan.</div>;
+  }
+  if (checked && !auth && !REQUIRE_LOGIN) {
+    return (
+      <div className="flex flex-1 items-center justify-center p-8 text-center text-slate-600">
+        Kunde inte starta appen. Kontrollera nätverket och ladda om sidan.
+      </div>
+    );
+  }
   if (!checked || !auth) {
     return <div className="flex flex-1 items-center justify-center p-8 text-slate-500">Laddar…</div>;
   }

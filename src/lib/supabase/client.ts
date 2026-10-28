@@ -8,6 +8,13 @@ let client: SupabaseClient | null = null;
  */
 export const LOCAL_ONLY = process.env.NEXT_PUBLIC_LOCAL_ONLY === "1";
 
+/**
+ * Standard: ingen inloggning. Varje enhet får automatiskt ett eget anonymt
+ * Supabase-konto och ser bara sina egna projekt (vanlig RLS).
+ * NEXT_PUBLIC_REQUIRE_LOGIN=1 slår på e-postinloggning, team och inbjudningar.
+ */
+export const REQUIRE_LOGIN = process.env.NEXT_PUBLIC_REQUIRE_LOGIN === "1";
+
 export function supabase(): SupabaseClient {
   if (!client) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

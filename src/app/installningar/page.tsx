@@ -37,9 +37,9 @@ export default function SettingsPage() {
     <div className="space-y-4">
       <PageHeader title="Inställningar" />
       <Card className="space-y-2">
-        <div className="text-sm text-slate-600">Inloggad som</div>
-        <div className="font-medium">{auth.email}</div>
-        {!LOCAL_ONLY && (
+        <div className="text-sm text-slate-600">{auth.anonymous ? "Din lagring" : "Inloggad som"}</div>
+        <div className="font-medium">{auth.anonymous ? "Privat för den här enheten och webbläsaren. Dina projekt syns bara för dig." : auth.email}</div>
+        {!LOCAL_ONLY && !auth.anonymous && (
           <Button
             variant="secondary"
             onClick={async () => {
@@ -76,7 +76,7 @@ export default function SettingsPage() {
         </Button>
       </Card>
 
-      {!LOCAL_ONLY && (
+      {!LOCAL_ONLY && !auth.anonymous && (
         <Card className="space-y-3">
           <h2 className="font-semibold">Organisation</h2>
           <Field label="Namn">

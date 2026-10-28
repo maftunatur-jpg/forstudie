@@ -86,7 +86,7 @@ function ProjectView({ id }: { id: string }) {
         {canEdit(role) && <Button onClick={newVisit} className="flex-1">+ Nytt besök</Button>}
         <Button variant="secondary" onClick={() => setShowQc(!showQc)}>Kvalitetskontroll</Button>
         <LinkButton variant="secondary" href={`/rapport?id=${id}`}>Rapport</LinkButton>
-        <LinkButton variant="secondary" href={`/team?id=${id}`}>Team</LinkButton>
+        {!auth.anonymous && <LinkButton variant="secondary" href={`/team?id=${id}`}>Team</LinkButton>}
       </div>
 
       {showQc && <QualityPanel q={qc} />}

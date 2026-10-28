@@ -98,7 +98,7 @@ function Team({ id }: { id: string }) {
   return (
     <div className="space-y-4">
       <PageHeader title={`Team – ${project.name}`} back={`/projekt?id=${id}`} />
-      {LOCAL_ONLY && <Alert>Team kräver Supabase (lokalt läge är aktivt).</Alert>}
+      {(LOCAL_ONLY || auth.anonymous) && <Alert>Team och inbjudningar kräver inloggning, som är avstängd. Dina projekt syns bara för dig.</Alert>}
       {!online && <Alert kind="warning">Team kräver nätverk.</Alert>}
       {message && <Alert kind={message.kind}>{message.text}</Alert>}
 

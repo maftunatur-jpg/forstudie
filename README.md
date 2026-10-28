@@ -4,6 +4,12 @@ Mobilanpassad webbapp (PWA) för fältinventering i förstudier inom bygg och fa
 
 **Teknik:** Next.js (App Router, TypeScript) + Tailwind · Supabase (Auth med magisk länk, Postgres med RLS, Storage) · IndexedDB (Dexie) med synkkö · PWA · rapport genereras i webbläsaren (pdf-lib, docx) · valfria AI-förslag via Anthropic API.
 
+## Inloggning
+
+Som standard behövs **ingen inloggning**. Första gången appen öppnas skapas automatiskt ett eget anonymt konto för enheten (Supabase anonymous sign-in). Var och en ser bara sina egna projekt, och allt sparas i molnet som backup. Kontot sitter i webbläsaren: rensar man webbläsardatan eller byter telefon kommer man inte längre åt sina tidigare projekt. Exportera rapporten för att spara arbetet.
+
+Vill ni dela projekt i ett team: sätt `NEXT_PUBLIC_REQUIRE_LOGIN=1`. Då slås e-postinloggning, roller och inbjudningar på.
+
 ## Funktioner
 
 - **Projekt** med fastighetsbeteckning, adress, beställare, förstudietyp, datum, ansvarig, 1–2 egna byggnadsnivåer (t.ex. *Lamell A–M* eller *Hus 1–5*) och valda checklistmallar.
@@ -53,7 +59,7 @@ Service workern registreras bara i produktionsläge (`npm run build && npm start
 3. **Authentication → URL Configuration:**
    - *Site URL:* din produktions-URL, t.ex. `https://faltinventering.vercel.app`
    - *Redirect URLs:* lägg till `http://localhost:3000/**` och `https://<ditt-projekt>.vercel.app/**` (och ev. `https://*-<team>.vercel.app/**` för förhandsversioner).
-4. **Authentication → Providers → Email:** magisk länk är på som standard.
+4. **Authentication → Sign In / Providers:** slå på **Allow anonymous sign-ins** (krävs i standardläget utan inloggning). Med `NEXT_PUBLIC_REQUIRE_LOGIN=1` används i stället e-post med magisk länk, som är på som standard.
 5. **E-post (viktigt för team):** Supabase inbyggda e-post är kraftigt begränsad (några mejl per timme). Lägg in egen SMTP under *Authentication → SMTP Settings* (t.ex. Resend, Postmark, SendGrid) innan ni bjuder in kollegor.
 6. Hämta *Project URL* och *Publishable key* under *Project Settings → API*.
 
@@ -66,6 +72,7 @@ Service workern registreras bara i produktionsläge (`npm run build && npm start
 | `NEXT_PUBLIC_SUPABASE_URL` | klient + server | Supabase Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | klient + server | Publishable/anon key. Får finnas i webbläsaren – RLS skyddar datan. |
 | `ANTHROPIC_API_KEY` | **endast server** | Valfri. Aktiverar AI-förslag. Utan den visas ett felmeddelande när man trycker på knappen. |
+| `NEXT_PUBLIC_REQUIRE_LOGIN` | klient | Valfri. `1` = e-postinloggning, team och inbjudningar. Utan den: anonymt konto per enhet. |
 | `NEXT_PUBLIC_LOCAL_ONLY` | klient | Valfri. `1` = lokalt läge utan Supabase. |
 
 Hemligheter ligger bara i `.env.local` (ignoreras av git) och i Vercels miljövariabler.
